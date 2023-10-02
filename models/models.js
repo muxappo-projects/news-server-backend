@@ -14,3 +14,18 @@ exports.fetchTopics = () => {
     return rows;
   });
 };
+
+exports.fetchArticleByID = (id) => {
+  const getQuery = `
+    SELECT * FROM articles
+    WHERE article_id = $1
+    `;
+  return db.query(getQuery, [id]).then(({ rows }) => {
+    if (rows.length === 0) {
+      const error = Error("ID does not exist");
+      error.status = 404;
+      throw error;
+    }
+    return rows;
+  });
+};

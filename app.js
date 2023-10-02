@@ -1,9 +1,15 @@
 const express = require("express");
 const app = express();
-const { getTopics, getAllEndpoints } = require("./controllers/controllers.js");
+const {
+  getTopics,
+  getAllEndpoints,
+  getArticleByID,
+} = require("./controllers/controllers.js");
 
+// GET requests
 app.get("/api", getAllEndpoints);
 app.get("/api/topics", getTopics);
+app.get("/api/articles/:article_id", getArticleByID);
 
 app.use((req, res, next) => {
   const error = new Error("endpoint does not exist");
@@ -11,6 +17,7 @@ app.use((req, res, next) => {
   next(error);
 });
 
+// error handling
 app.use((err, req, res, next) => {
   res.status(err.status).send({ msg: err.message });
 });
