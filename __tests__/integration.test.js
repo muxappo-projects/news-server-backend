@@ -19,6 +19,24 @@ describe("GET requests", () => {
         expect(msg).toBe("endpoint does not exist");
       });
   });
+
+  describe("/api", () => {
+    it('returns with 200 status code "OK"', () => {
+      return request(app).get("/api").expect(200);
+    });
+
+    it("responds with an object containing all possible endpoints", () => {
+      return request(app)
+        .get("/api")
+        .then(({ body: { endpoints } }) => {
+          const isObject = Object.keys(endpoints).length > 0;
+          const isNotArray = !Array.isArray(endpoints);
+
+          expect(isObject && isNotArray).toBe(true);
+        });
+    });
+  });
+
   describe("/api/topics", () => {
     it('returns with 200 status code "OK"', () => {
       return request(app).get("/api/topics").expect(200);
