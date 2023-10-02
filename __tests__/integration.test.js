@@ -3,6 +3,7 @@ const app = require("../app.js");
 const db = require("../db/connection.js");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed.js");
+const endpointsJSON = require("../endpoints.json");
 
 beforeEach(() => {
   return seed(data);
@@ -29,10 +30,7 @@ describe("GET requests", () => {
       return request(app)
         .get("/api")
         .then(({ body: { endpoints } }) => {
-          const isObject = Object.keys(endpoints).length > 0;
-          const isNotArray = !Array.isArray(endpoints);
-
-          expect(isObject && isNotArray).toBe(true);
+          expect(endpoints).toEqual(endpointsJSON);
         });
     });
   });
