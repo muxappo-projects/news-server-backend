@@ -49,12 +49,6 @@ exports.fetchAllArticles = () => {
   `;
 
   return db.query(getQuery).then(({ rows }) => {
-    if (rows.length === 0) {
-      return Promise.reject({
-        status: 404,
-        message: "No articles found",
-      });
-    }
     return rows;
   });
 };

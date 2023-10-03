@@ -150,9 +150,20 @@ describe("GET requests", () => {
       return request(app)
         .get("/api/articles")
         .then(({ body: { articles } }) => {
-          for (let i = 0; i < articles.length; i++) {
-            expect(articles[i].hasOwnProperty("comment_count")).toBe(true);
-          }
+          return articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String),
+                comment_count: expect.any(String),
+              })
+            );
+          });
         });
     });
 
@@ -161,23 +172,6 @@ describe("GET requests", () => {
         .get("/api/articles")
         .then(({ body: { articles } }) => {
           expect(articles).toBeSortedBy("created_at", { descending: true });
-        });
-    });
-
-    it("returns a 404 if no articles are found", () => {
-      return db
-        .query(
-          `
-      DELETE FROM comments;
-      DELETE FROM articles;`
-        )
-        .then(() => {
-          return request(app)
-            .get("/api/articles")
-            .expect(404)
-            .then(({ body: { msg } }) => {
-              expect(msg).toBe("No articles found");
-            });
         });
     });
   });
