@@ -22,7 +22,38 @@ exports.fetchArticleByID = (id) => {
     `;
   return db.query(getQuery, [id]).then(({ rows }) => {
     if (rows.length === 0) {
-      return Promise.reject({ status: 404, message: "ID does not exist" });
+      return Promise.reject({
+        status: 404,
+        message: "ID does not exist",
+      });
+    }
+    return rows;
+  });
+};
+
+exports.fetchAllArticles = () => {
+  const getQuery = `
+  SELECT
+    articles.author,
+    articles.title,
+    articles.article_id,
+    articles.topic,
+    articles.created_at,
+    articles.votes,
+    articles.article_img_url,
+  COUNT(comments.comment_id) AS comment_count
+  FROM articles
+  LEFT JOIN comments ON articles.article_id = comments.article_id
+  GROUP BY articles.article_id
+  ORDER BY created_at DESC
+  `;
+
+  return db.query(getQuery).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        message: "No articles found",
+      });
     }
     return rows;
   });

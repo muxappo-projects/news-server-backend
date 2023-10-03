@@ -2,6 +2,7 @@ const {
   fetchTopics,
   fetchEndpoints,
   fetchArticleByID,
+  fetchAllArticles,
 } = require("../models/models.js");
 
 exports.getAllEndpoints = (req, res, next) => {
@@ -9,9 +10,7 @@ exports.getAllEndpoints = (req, res, next) => {
     .then((endpoints) => {
       res.status(200).send({ endpoints });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => next(err));
 };
 
 exports.getTopics = (req, res, next) => {
@@ -19,9 +18,7 @@ exports.getTopics = (req, res, next) => {
     .then((topics) => {
       res.status(200).send({ topics });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => next(err));
 };
 
 exports.getArticleByID = ({ params: { article_id } }, res, next) => {
@@ -29,8 +26,13 @@ exports.getArticleByID = ({ params: { article_id } }, res, next) => {
     .then((article) => {
       res.status(200).send({ article });
     })
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
+    .catch((err) => next(err));
+};
+
+exports.getAllArticles = (req, res, next) => {
+  fetchAllArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => next(err));
 };

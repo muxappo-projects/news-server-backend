@@ -123,4 +123,62 @@ describe("GET requests", () => {
         });
     });
   });
+
+  describe("/api/articles", () => {
+    it('returns with 200 status code "OK"', () => {
+      return request(app).get("/api/articles").expect(200);
+    });
+
+    it("responds with an array of article objects", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(Array.isArray(articles)).toBe(true);
+          expect(articles.length).toBeGreaterThan(0);
+
+          for (let i = 0; i < articles.length; i++) {
+            const isObject = Object.keys(articles[i]).length > 0;
+            const isNotArray = !Array.isArray(articles[i]);
+
+            expect(isObject && isNotArray).toBe(true);
+          }
+        });
+    });
+
+    it("returned objects have a call_count property", () => {
+      return request(app)
+        .get("/api/articles")
+        .then(({ body: { articles } }) => {
+          for (let i = 0; i < articles.length; i++) {
+            expect(articles[i].hasOwnProperty("comment_count")).toBe(true);
+          }
+        });
+    });
+
+    it("returns articles in descending order by date", () => {
+      return request(app)
+        .get("/api/articles")
+        .then(({ body: { articles } }) => {
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+
+    it("returns a 404 if no articles are found", () => {
+      return db
+        .query(
+          `
+      DELETE FROM comments;
+      DELETE FROM articles;`
+        )
+        .then(() => {
+          return request(app)
+            .get("/api/articles")
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("No articles found");
+            });
+        });
+    });
+  });
 });

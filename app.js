@@ -4,12 +4,14 @@ const {
   getTopics,
   getAllEndpoints,
   getArticleByID,
+  getAllArticles,
 } = require("./controllers/controllers.js");
 
 // GET requests
 app.get("/api", getAllEndpoints);
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleByID);
+app.get("/api/articles", getAllArticles);
 
 app.use((req, res, next) => {
   const error = new Error("endpoint does not exist");
@@ -24,7 +26,6 @@ app.use((err, req, res, next) => {
     err.message = "Bad request";
     res.status(400).send({ msg: err.message });
   }
-
   next(err);
 });
 
