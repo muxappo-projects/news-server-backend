@@ -123,4 +123,56 @@ describe("GET requests", () => {
         });
     });
   });
+
+  describe("/api/articles", () => {
+    it('returns with 200 status code "OK"', () => {
+      return request(app).get("/api/articles").expect(200);
+    });
+
+    it("responds with an array of article objects", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(Array.isArray(articles)).toBe(true);
+          expect(articles.length).toBeGreaterThan(0);
+
+          for (let i = 0; i < articles.length; i++) {
+            const isObject = Object.keys(articles[i]).length > 0;
+            const isNotArray = !Array.isArray(articles[i]);
+
+            expect(isObject && isNotArray).toBe(true);
+          }
+        });
+    });
+
+    it("returned objects have a call_count property", () => {
+      return request(app)
+        .get("/api/articles")
+        .then(({ body: { articles } }) => {
+          return articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String),
+                comment_count: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+
+    it("returns articles in descending order by date", () => {
+      return request(app)
+        .get("/api/articles")
+        .then(({ body: { articles } }) => {
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+  });
 });
