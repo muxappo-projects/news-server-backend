@@ -6,12 +6,22 @@
     "description": "serves an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [
+        {
+          "slug": "football",
+          "description": "Footie!"
+        }
+      ]
     }
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": [
+      "author",
+      "topic",
+      "sort_by",
+      "order"
+    ],
     "exampleResponse": {
       "articles": [
         {
@@ -24,6 +34,22 @@
           "comment_count": 6
         }
       ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article fetched by the given id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "author": "author_name",
+        "article_id": "4",
+        "title": "article_title",
+        "topic": "topic",
+        "body": "Article text",
+        "created_at": "Date",
+        "votes": "6",
+        "article_img_url": "url"
+      }
     }
   }
 }

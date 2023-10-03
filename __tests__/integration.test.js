@@ -1,8 +1,10 @@
 const request = require("supertest");
+const seed = require("../db/seeds/seed.js");
+
 const app = require("../app.js");
 const db = require("../db/connection.js");
 const data = require("../db/data/test-data");
-const seed = require("../db/seeds/seed.js");
+
 const endpointsJSON = require("../endpoints.json");
 
 beforeEach(() => {
@@ -68,6 +70,56 @@ describe("GET requests", () => {
                 topics[i].hasOwnProperty("description")
             ).toBe(true);
           }
+        });
+    });
+  });
+
+  describe("/api/articles/:article_id", () => {
+    it('returns with 200 status code "OK"', () => {
+      return request(app).get("/api/articles/3").expect(200);
+    });
+
+    it("responds with the correct article object containing the required properties", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .then(({ body: { article } }) => {
+          const isObject = Object.keys(article[0]).length > 0;
+          const isNotArray = !Array.isArray(article[0]);
+
+          const properties = [
+            "title",
+            "author",
+            "topic",
+            "article_id",
+            "body",
+            "created_at",
+            "votes",
+            "article_img_url",
+          ];
+
+          expect(isObject && isNotArray).toBe(true);
+
+          for (let i = 0; i < properties.length; i++) {
+            expect(article[0].hasOwnProperty(properties[i])).toBe(true);
+          }
+        });
+    });
+
+    it("returns a 404 if no id is found, inc. a meaningful error", () => {
+      return request(app)
+        .get("/api/articles/600")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("ID does not exist");
+        });
+    });
+
+    it("returns a 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/articles/articleOne")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
         });
     });
   });
