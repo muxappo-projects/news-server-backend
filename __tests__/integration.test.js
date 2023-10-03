@@ -23,6 +23,15 @@ describe("GET requests", () => {
       });
   });
 
+  it("returns a 400 when a bad request is made", () => {
+    return request(app)
+      .get("/api/articles/articleOne")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
   describe("/api", () => {
     it('returns with 200 status code "OK"', () => {
       return request(app).get("/api").expect(200);
@@ -113,15 +122,6 @@ describe("GET requests", () => {
           expect(msg).toBe("ID does not exist");
         });
     });
-
-    it("returns a 400 when a bad request is made", () => {
-      return request(app)
-        .get("/api/articles/articleOne")
-        .expect(400)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
-        });
-    });
   });
 
   describe("/api/articles", () => {
@@ -146,7 +146,7 @@ describe("GET requests", () => {
         });
     });
 
-    it("returned objects have a call_count property", () => {
+    it("returned objects have the required properties", () => {
       return request(app)
         .get("/api/articles")
         .then(({ body: { articles } }) => {
@@ -173,6 +173,74 @@ describe("GET requests", () => {
         .then(({ body: { articles } }) => {
           expect(articles).toBeSortedBy("created_at", { descending: true });
         });
+    });
+  });
+
+  describe("/api/articles/:article_id/comments", () => {
+    it('returns with status code 200 "OK"', () => {
+      return request(app).get("/api/articles/1/comments").expect(200);
+    });
+
+    it("responds with an array of comment objects", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(Array.isArray(comments)).toBe(true);
+          expect(comments.length).toBeGreaterThan(0);
+
+          for (let i = 0; i < comments.length; i++) {
+            const isObject = Object.keys(comments[i]).length > 0;
+            const isNotArray = !Array.isArray(comments[i]);
+
+            expect(isObject && isNotArray).toBe(true);
+          }
+        });
+    });
+
+    it("returned objects contain the required properties", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .then(({ body: { comments } }) => {
+          return comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                article_id: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+
+    it("returned array should be sorted by most recent comments", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .then(({ body: { comments } }) => {
+          expect(comments).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+
+    it("returns a 404 if no comments are found OR if the ID does not exist", () => {
+      const noArticle = request(app)
+        .get("/api/articles/45/comments")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Article not found");
+        });
+
+      const noComments = request(app)
+        .get("/api/articles/2/comments")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("No comments found");
+        });
+
+      return Promise.all([noArticle, noComments]);
     });
   });
 });
