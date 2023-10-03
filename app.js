@@ -18,6 +18,16 @@ app.use((req, res, next) => {
 });
 
 // error handling
+
+app.use((err, req, res, next) => {
+  if (err.code === "22P02") {
+    err.message = "Bad request";
+    res.status(400).send({ msg: err.message });
+  }
+
+  next(err);
+});
+
 app.use((err, req, res, next) => {
   res.status(err.status).send({ msg: err.message });
 });

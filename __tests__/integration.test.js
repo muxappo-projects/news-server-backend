@@ -113,5 +113,14 @@ describe("GET requests", () => {
           expect(msg).toBe("ID does not exist");
         });
     });
+
+    it("returns a 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/articles/articleOne")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
   });
 });
