@@ -181,27 +181,12 @@ describe("GET requests", () => {
       return request(app).get("/api/articles/1/comments").expect(200);
     });
 
-    it("responds with an array of comment objects", () => {
-      return request(app)
-        .get("/api/articles/1/comments")
-        .expect(200)
-        .then(({ body: { comments } }) => {
-          expect(Array.isArray(comments)).toBe(true);
-          expect(comments.length).toBeGreaterThan(0);
-
-          for (let i = 0; i < comments.length; i++) {
-            const isObject = Object.keys(comments[i]).length > 0;
-            const isNotArray = !Array.isArray(comments[i]);
-
-            expect(isObject && isNotArray).toBe(true);
-          }
-        });
-    });
-
     it("returned objects contain the required properties", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(11);
+
           return comments.forEach((comment) => {
             expect(comment).toEqual(
               expect.objectContaining({
@@ -225,22 +210,13 @@ describe("GET requests", () => {
         });
     });
 
-    it("returns a 404 if no comments are found OR if the ID does not exist", () => {
-      const noArticle = request(app)
+    it("returns a 404 if the ID does not exist", () => {
+      return request(app)
         .get("/api/articles/45/comments")
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Article not found");
         });
-
-      const noComments = request(app)
-        .get("/api/articles/2/comments")
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("No comments found");
-        });
-
-      return Promise.all([noArticle, noComments]);
     });
   });
 });

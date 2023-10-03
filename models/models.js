@@ -72,12 +72,6 @@ exports.fetchCommentsByArticle = (id) => {
           [id]
         )
         .then(({ rows }) => {
-          if (rows.length === 0) {
-            return Promise.reject({
-              status: 404,
-              message: "No comments found",
-            });
-          }
           return rows;
         });
     });
