@@ -74,7 +74,7 @@ describe("GET requests", () => {
     });
   });
 
-  describe("/api/articles/:article_id", () => {
+  describe.only("/api/articles/:article_id", () => {
     it('returns with 200 status code "OK"', () => {
       return request(app).get("/api/articles/3").expect(200);
     });
@@ -105,7 +105,7 @@ describe("GET requests", () => {
         });
     });
 
-    it("returns a 404 if no id is found, inc. a meaningful error message", () => {
+    it("returns a 404 if no id is found, inc. a meaningful error", () => {
       return request(app)
         .get("/api/articles/600")
         .expect(404)

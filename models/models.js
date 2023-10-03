@@ -22,9 +22,7 @@ exports.fetchArticleByID = (id) => {
     `;
   return db.query(getQuery, [id]).then(({ rows }) => {
     if (rows.length === 0) {
-      const error = Error("ID does not exist");
-      error.status = 404;
-      throw error;
+      return Promise.reject({ status: 404, message: "ID does not exist" });
     }
     return rows;
   });
