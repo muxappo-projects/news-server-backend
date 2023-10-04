@@ -220,3 +220,68 @@ describe("GET requests", () => {
     });
   });
 });
+
+describe("POST requests", () => {
+  describe("/api/articles/:article_id/comments", () => {
+    it('returns a 201 status code "CREATED"', () => {
+      const newComment = {
+        username: "rogersop",
+        commentBody: "I LOVE MITCH",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201);
+    });
+
+    it("responds with the created comment", () => {
+      const newComment = {
+        username: "rogersop",
+        commentBody: "I LOVE MITCH",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .then(({ body: { created_comment } }) => {
+          expect(created_comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          );
+        });
+    });
+
+    it("returns a 404 if the article ID doesn't exist", () => {
+      const newComment = {
+        username: "rogersop",
+        commentBody: "I LOVE MITCH",
+      };
+
+      return request(app)
+        .post("/api/articles/50/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Article not found");
+        });
+    });
+
+    it("returns a 400 when sent an empty object", () => {
+      const newComment = {};
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+  });
+});

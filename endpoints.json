@@ -42,14 +42,27 @@
     "exampleResponse": {
       "article": {
         "author": "author_name",
-        "article_id": "4",
+        "article_id": 4,
         "title": "article_title",
         "topic": "topic",
         "body": "Article text",
         "created_at": "Date",
-        "votes": "6",
+        "votes": 6,
         "article_img_url": "url"
       }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comment objects associated with the given article ID",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment 1": {},
+          "comment 2": {},
+          "comment 3": {}
+        }
+      ]
     }
   }
 }

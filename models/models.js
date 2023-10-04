@@ -76,3 +76,26 @@ exports.fetchCommentsByArticle = (id) => {
         });
     });
 };
+
+exports.createComment = ({ commentBody, username }, id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1", [id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: "Article not found",
+        });
+      }
+      const postQuery = `INSERT INTO comments
+      (body, author, article_id)
+      VALUES
+      ($1, $2, $3)
+      RETURNING *;`;
+      const values = [commentBody, username, id];
+
+      return db.query(postQuery, values).then(({ rows }) => {
+        return rows[0];
+      });
+    });
+};
