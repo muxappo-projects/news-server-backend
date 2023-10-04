@@ -81,5 +81,23 @@
         "created_at": "date"
       }
     }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "accepts a patch object with an inc_votes property to increment the votes on an article, then responds with the updated article",
+    "exampleRequestBody": {
+      "inc_votes": 2
+    },
+    "exampleResponse": {
+      "updated_article": {
+        "article_id": 4,
+        "body": "Article text",
+        "title": "article_title",
+        "topic": "topic",
+        "author": "author_name",
+        "votes": 5,
+        "created_at": "date",
+        "article_img_url": "url"
+      }
+    }
   }
 }

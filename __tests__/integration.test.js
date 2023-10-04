@@ -339,4 +339,144 @@ describe("POST requests", () => {
         });
     });
   });
+
+  describe("PATCH /api/articles/:article_id", () => {
+    it('returns a 200 status code "OK"', () => {
+      const articlePatch = {
+        inc_votes: 1,
+      };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(articlePatch)
+        .expect(200);
+    });
+
+    it("responds with the updated article containing all properties", () => {
+      const articlePatch = {
+        inc_votes: 1,
+      };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(articlePatch)
+        .then(({ body: { updated_article } }) => {
+          expect(updated_article).toEqual(
+            expect.objectContaining({
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: expect.any(String),
+              votes: 101,
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            })
+          );
+        });
+    });
+
+    it("correctly changes the votes property by the provided value", () => {
+      const increment = {
+        inc_votes: 1,
+      };
+      const decrement = {
+        inc_votes: -10,
+      };
+
+      const incrementPatch = request(app)
+        .patch("/api/articles/1")
+        .send(increment)
+        .then(
+          ({
+            body: {
+              updated_article: { votes },
+            },
+          }) => {
+            expect(votes).toBe(101);
+          }
+        );
+      const decrementPatch = request(app)
+        .patch("/api/articles/1")
+        .send(decrement)
+        .then(
+          ({
+            body: {
+              updated_article: { votes },
+            },
+          }) => {
+            expect(votes).toBe(91);
+          }
+        );
+
+      return Promise.all([incrementPatch, decrementPatch]);
+    });
+
+    it("ignores unnecessary data when updating article", () => {
+      const patch = {
+        author: "John",
+        john: "yes",
+        inc_votes: 1,
+        yes: "I already said that",
+      };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(patch)
+        .then(({ body: { updated_article } }) => {
+          expect(updated_article).toEqual(
+            expect.objectContaining({
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: expect.any(String),
+              votes: 101,
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            })
+          );
+        });
+    });
+
+    it("returns a 404 when article ID is not found ", () => {
+      const patch = {
+        inc_votes: 1,
+      };
+
+      return request(app)
+        .patch("/api/articles/34")
+        .send(patch)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not found");
+        });
+    });
+
+    it("returns a 400 when given an invalid article ID", () => {
+      const patch = {
+        inc_votes: 1,
+      };
+
+      return request(app)
+        .patch("/api/articles/patchThis")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid input format");
+        });
+    });
+
+    it("returns a 400 when sent an incomplete request object", () => {
+      const patch = {};
+
+      return request(app)
+        .patch("/api/articles/1")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Required field(s) missing");
+        });
+    });
+  });
 });
