@@ -1,9 +1,9 @@
 # Project Checklist: Backend
 
-[x] Project Setup
-	[x] Make a repo
-	[x] Create databases
-	[x] Update readme
+- [x] Project Setup
+	- [x] Make a repo
+	- [x] Create databases
+	- [x] Update readme
 
 ## CORE ELEMENTS
 
