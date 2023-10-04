@@ -64,5 +64,22 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments"{
+    "description": "accepts a comment object containing username and commentBody properties, inserts according to given article id, then serves the created comment on completion",
+    "exampleRequestBody": {
+      "username": "user",
+      "commentBody": "comment text"
+    },
+    "exampleResponse": {
+      "created_comment": {
+        "comment_id": 12,
+        "body": "comment text",
+        "author": "user",
+        "article_id": 4,
+        "votes": 3,
+        "created_at": "date"
+      }
+    }
   }
 }
