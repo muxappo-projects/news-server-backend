@@ -5,11 +5,11 @@
 	- [x] Create databases
 	- [x] Update readme
 
-## CORE ELEMENTS
-
+## Core Elements
 - GET requests
 	- [x] /api/topics
 	- [x] /api
 	- [x] /api/articles/:article_id
 	- [x] /api/articles
 	- [x] /api/articles/:article_id/comments 
+
