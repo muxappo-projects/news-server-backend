@@ -22,7 +22,7 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticle);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.use((req, res, next) => {
-  const error = new Error("endpoint does not exist");
+  const error = new Error("Endpoint does not exist");
   error.status = 404;
   next(error);
 });
@@ -30,11 +30,27 @@ app.use((req, res, next) => {
 // error handling
 
 app.use((err, req, res, next) => {
-  if (err.code) {
-    err.message = "Bad request";
-    res.status(400).send({ msg: err.message });
+  let errStatus;
+  switch (err.code) {
+    case "22P02":
+      errStatus = 400;
+      err.message = "Invalid input format";
+      break;
+
+    case "23502":
+      errStatus = 400;
+      err.message = "Required field(s) missing";
+      break;
+
+    case "23503":
+      errStatus = 404;
+      err.message = "Not found";
+      break;
+
+    default:
+      return next(err);
   }
-  next(err);
+  res.status(errStatus).send({ msg: err.message });
 });
 
 app.use((err, req, res, next) => {

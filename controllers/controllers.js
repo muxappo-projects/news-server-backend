@@ -49,8 +49,8 @@ exports.getCommentsByArticle = ({ params: { article_id } }, res, next) => {
 
 exports.postComment = ({ body, params: { article_id } }, res, next) => {
   createComment(body, article_id)
-    .then((comment) => {
-      res.status(201).send({ created_comment: comment });
+    .then((created_comment) => {
+      res.status(201).send({ created_comment });
     })
     .catch((err) => next(err));
 };
