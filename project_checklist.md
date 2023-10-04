@@ -6,10 +6,14 @@
 	- [x] Update readme
 
 ## Core Elements
-- GET requests
-	- [x] /api/topics
-	- [x] /api
-	- [x] /api/articles/:article_id
-	- [x] /api/articles
-	- [x] /api/articles/:article_id/comments 
-
+- GET
+	- [x] /api/topics PR approved
+	- [x] /api PR approved
+	- [x] /api/articles/:article_id PR approved
+	- [x] /api/articles PR approved
+	- [x] /api/articles/:article_id/comments PR approved
+- POST/PATCH
+  	- [] POST /api/articles/:article_id/comments PR approved
+  	- [] PATCH /api/articles/:article_id PR approved
+- DELETE
+  	-[]
