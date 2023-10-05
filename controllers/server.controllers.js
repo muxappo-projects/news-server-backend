@@ -5,6 +5,7 @@ const {
   fetchAllArticles,
   fetchCommentsByArticle,
   createComment,
+  updateArticle,
 } = require("../models/models.js");
 
 exports.getAllEndpoints = (req, res, next) => {
@@ -51,6 +52,14 @@ exports.postComment = ({ body, params: { article_id } }, res, next) => {
   createComment(body, article_id)
     .then((created_comment) => {
       res.status(201).send({ created_comment });
+    })
+    .catch((err) => next(err));
+};
+
+exports.patchArticle = ({ body, params: { article_id } }, res, next) => {
+  updateArticle(body, article_id)
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch((err) => next(err));
 };
