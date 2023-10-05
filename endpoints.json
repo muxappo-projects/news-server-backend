@@ -99,5 +99,8 @@
         "article_img_url": "url"
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment by the given comment ID"
   }
 }
