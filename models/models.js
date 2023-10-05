@@ -125,3 +125,13 @@ exports.removeComment = (id) => {
     }
   });
 };
+
+exports.fetchAllUsers = () => {
+  const getQuery = `
+  SELECT * FROM users;
+  `;
+
+  return db.query(getQuery).then(({ rows }) => {
+    return rows;
+  });
+};

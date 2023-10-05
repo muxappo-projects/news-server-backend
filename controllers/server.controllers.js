@@ -7,6 +7,7 @@ const {
   createComment,
   updateArticle,
   removeComment,
+  fetchAllUsers,
 } = require("../models/models.js");
 
 exports.getAllEndpoints = (req, res, next) => {
@@ -69,6 +70,14 @@ exports.deleteComment = ({ params: { comment_id } }, res, next) => {
   removeComment(comment_id)
     .then((msg) => {
       res.status(204).send({ msg });
+    })
+    .catch((err) => next(err));
+};
+
+exports.getAllUsers = (req, res, next) => {
+  fetchAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch((err) => next(err));
 };

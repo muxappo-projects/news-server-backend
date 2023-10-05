@@ -219,6 +219,31 @@ describe("GET requests", () => {
         });
     });
   });
+
+  describe("/api/users", () => {
+    it('should return with status code 200 "OK"', () => {
+      return request(app).get("/api/users").expect(200);
+    });
+
+    it("responds with an array of user objects containing the required properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body: { users } }) => {
+          expect(users.length).toBe(4);
+
+          return users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  });
 });
 
 describe("POST/PATCH requests", () => {
