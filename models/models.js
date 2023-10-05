@@ -76,3 +76,16 @@ exports.fetchCommentsByArticle = (id) => {
         });
     });
 };
+
+exports.createComment = ({ commentBody, username }, id) => {
+  const postQuery = `INSERT INTO comments
+      (body, author, article_id)
+      VALUES
+      ($1, $2, $3)
+      RETURNING *;`;
+  const values = [commentBody, username, id];
+
+  return db.query(postQuery, values).then(({ rows }) => {
+    return rows[0];
+  });
+};

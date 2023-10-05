@@ -19,16 +19,16 @@ describe("GET requests", () => {
       .get("/api/notanendpoint")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("endpoint does not exist");
+        expect(msg).toBe("Endpoint does not exist");
       });
   });
 
-  it("returns a 400 when a bad request is made", () => {
+  it("returns a 400 when invaid ID is given", () => {
     return request(app)
       .get("/api/articles/articleOne")
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad request");
+        expect(msg).toBe("Invalid input format");
       });
   });
 
@@ -216,6 +216,126 @@ describe("GET requests", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Article not found");
+        });
+    });
+  });
+});
+
+describe("POST requests", () => {
+  describe("/api/articles/:article_id/comments", () => {
+    it('returns a 201 status code "CREATED"', () => {
+      const newComment = {
+        username: "rogersop",
+        commentBody: "I LOVE MITCH",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201);
+    });
+
+    it("responds with the created comment", () => {
+      const newComment = {
+        username: "rogersop",
+        commentBody: "I LOVE MITCH",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .then(({ body: { created_comment } }) => {
+          expect(created_comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          );
+        });
+    });
+
+    it("ignores any unnecessary data when inserting the comment", () => {
+      const newComment = {
+        username: "rogersop",
+        yes: "true",
+        commentBody: "I LOVE MITCH",
+        coding: "absolutely",
+        hotel: "trivago",
+      };
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body: { created_comment } }) => {
+          expect(created_comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          );
+        });
+    });
+
+    it("returns a 404 if the article ID doesn't exist", () => {
+      const newComment = {
+        username: "rogersop",
+        commentBody: "I LOVE MITCH",
+      };
+
+      return request(app)
+        .post("/api/articles/50/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not found");
+        });
+    });
+
+    it("returns a 404 if the username doesn't exist", () => {
+      const newComment = {
+        username: "imNotReal",
+        commentBody: "I LOVE MITCH",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not found");
+        });
+    });
+
+    it("returns a 400 when sent an empty object", () => {
+      const newComment = {};
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Required field(s) missing");
+        });
+    });
+
+    it("returns a 400 when article ID is of an invalid data type", () => {
+      const newComment = {
+        username: "rogersop",
+        commentBody: "I LOVE MITCH",
+      };
+
+      return request(app)
+        .post("/api/articles/articleOne/comments")
+        .send(newComment)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid input format");
         });
     });
   });
