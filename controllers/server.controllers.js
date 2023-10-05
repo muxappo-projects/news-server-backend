@@ -58,8 +58,8 @@ exports.postComment = ({ body, params: { article_id } }, res, next) => {
 
 exports.patchArticle = ({ body, params: { article_id } }, res, next) => {
   updateArticle(body, article_id)
-    .then((updated_article) => {
-      res.status(200).send({ updated_article });
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch((err) => next(err));
 };

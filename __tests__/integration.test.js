@@ -360,8 +360,8 @@ describe("POST requests", () => {
       return request(app)
         .patch("/api/articles/1")
         .send(articlePatch)
-        .then(({ body: { updated_article } }) => {
-          expect(updated_article).toEqual(
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
             expect.objectContaining({
               article_id: 1,
               title: "Living in the shadow of a great man",
@@ -391,7 +391,7 @@ describe("POST requests", () => {
         .then(
           ({
             body: {
-              updated_article: { votes },
+              article: { votes },
             },
           }) => {
             expect(votes).toBe(101);
@@ -403,7 +403,7 @@ describe("POST requests", () => {
         .then(
           ({
             body: {
-              updated_article: { votes },
+              article: { votes },
             },
           }) => {
             expect(votes).toBe(91);
@@ -424,8 +424,8 @@ describe("POST requests", () => {
       return request(app)
         .patch("/api/articles/1")
         .send(patch)
-        .then(({ body: { updated_article } }) => {
-          expect(updated_article).toEqual(
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
             expect.objectContaining({
               article_id: 1,
               title: "Living in the shadow of a great man",
@@ -455,17 +455,32 @@ describe("POST requests", () => {
         });
     });
 
-    it("returns a 400 when given an invalid article ID", () => {
-      const patch = {
+    it("returns a 400 when given invalid input formats", () => {
+      const patch1 = {
         inc_votes: 1,
       };
 
-      return request(app)
+      const patch2 = {
+        inc_votes: "one",
+      };
+
+      const invalidArticle = request(app)
         .patch("/api/articles/patchThis")
+        .send(patch1)
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid input format");
         });
+
+      const invalidIncType = request(app)
+        .patch("/api/articles/1")
+        .send(patch2)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid input format");
+        });
+
+      return Promise.all([invalidArticle, invalidIncType]);
     });
 
     it("returns a 400 when sent an incomplete request object", () => {
