@@ -1,4 +1,4 @@
-# Northcoders News API
+# News API
 
 .env files are required for this repo:
 
