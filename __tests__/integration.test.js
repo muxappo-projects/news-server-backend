@@ -221,7 +221,7 @@ describe("GET requests", () => {
   });
 });
 
-describe("POST requests", () => {
+describe("POST/PATCH requests", () => {
   describe("/api/articles/:article_id/comments", () => {
     it('returns a 201 status code "CREATED"', () => {
       const newComment = {
@@ -491,6 +491,32 @@ describe("POST requests", () => {
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Required field(s) missing");
+        });
+    });
+  });
+});
+
+describe("DELETE requests", () => {
+  describe("/api/comments/:comment_id", () => {
+    it('returns with status code 204 "No Content"', () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+
+    it("returns a 404 if no content is deleted (ID doesn't existed)", () => {
+      return request(app)
+        .delete("/api/comments/34")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("No rows deleted");
+        });
+    });
+
+    it("returns a 400 if given invalid comment ID", () => {
+      return request(app)
+        .delete("/api/comments/commentOne")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid input format");
         });
     });
   });

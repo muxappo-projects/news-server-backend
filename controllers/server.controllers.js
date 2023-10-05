@@ -6,6 +6,7 @@ const {
   fetchCommentsByArticle,
   createComment,
   updateArticle,
+  removeComment,
 } = require("../models/models.js");
 
 exports.getAllEndpoints = (req, res, next) => {
@@ -60,6 +61,14 @@ exports.patchArticle = ({ body, params: { article_id } }, res, next) => {
   updateArticle(body, article_id)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch((err) => next(err));
+};
+
+exports.deleteComment = ({ params: { comment_id } }, res, next) => {
+  removeComment(comment_id)
+    .then((msg) => {
+      res.status(204).send({ msg });
     })
     .catch((err) => next(err));
 };

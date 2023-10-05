@@ -14,6 +14,7 @@ const {
   getCommentsByArticle,
   postComment,
   patchArticle,
+  deleteComment,
 } = require("./controllers/server.controllers.js");
 
 app.use(express.json());
@@ -28,6 +29,9 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticle);
 // POST/PATCH requests
 app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticle);
+
+// DELETE requests
+app.delete("/api/comments/:comment_id", deleteComment);
 
 // error handling
 app.use(create404);

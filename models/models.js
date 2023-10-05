@@ -109,3 +109,19 @@ exports.updateArticle = ({ inc_votes }, id) => {
     return rows[0];
   });
 };
+
+exports.removeComment = (id) => {
+  const delQuery = `
+  DELETE FROM comments
+  WHERE comment_id = $1
+  `;
+
+  return db.query(delQuery, [id]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        message: "No rows deleted",
+      });
+    }
+  });
+};
