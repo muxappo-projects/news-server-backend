@@ -230,7 +230,7 @@ describe("GET requests", () => {
         .get("/api/users")
         .expect(200)
         .then(({ body: { users } }) => {
-          expect(users.length).toBeGreaterThan(0);
+          expect(users.length).toBe(4);
 
           return users.forEach((user) => {
             expect(user).toEqual(
