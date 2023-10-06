@@ -34,12 +34,14 @@ exports.getArticleByID = ({ params: { article_id } }, res, next) => {
     .catch((err) => next(err));
 };
 
-exports.getAllArticles = (req, res, next) => {
-  fetchAllArticles()
+exports.getAllArticles = ({ query: { topic } }, res, next) => {
+  fetchAllArticles(topic)
     .then((articles) => {
       res.status(200).send({ articles });
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getCommentsByArticle = ({ params: { article_id } }, res, next) => {
