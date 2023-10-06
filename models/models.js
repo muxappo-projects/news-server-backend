@@ -39,19 +39,8 @@ exports.fetchArticleByID = (id) => {
   });
 };
 
-exports.fetchAllArticles = (sortby = "date") => {
-  const validSortbys = {
-    date: "created_at",
-    topic: "topic",
-  };
-
-  if (!sortby in validSortbys) {
-    return Promise.reject({
-      status: 400,
-      message: "Invalid sort query",
-    });
-  }
-  const getQuery = `
+exports.fetchAllArticles = (topic) => {
+  let getQuery = `
   SELECT
     articles.author, articles.title,
     articles.article_id, articles.topic,
@@ -60,11 +49,23 @@ exports.fetchAllArticles = (sortby = "date") => {
   COUNT(comments.comment_id) AS comment_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id
-  ORDER BY ${validSortbys[sortby]} DESC;
   `;
 
-  return db.query(getQuery).then(({ rows }) => {
+  const filter = [];
+  if (topic) {
+    getQuery += `WHERE topic = $1`;
+    filter.push(topic);
+  }
+
+  getQuery += `  
+  GROUP BY articles.article_id
+  ORDER BY created_at DESC; 
+  `;
+
+  return db.query(getQuery, filter).then(({ rows }) => {
+    if (rows.length === 0) {
+      return "No articles found";
+    }
     return rows;
   });
 };

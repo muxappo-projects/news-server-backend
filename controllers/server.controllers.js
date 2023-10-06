@@ -34,8 +34,8 @@ exports.getArticleByID = ({ params: { article_id } }, res, next) => {
     .catch((err) => next(err));
 };
 
-exports.getAllArticles = ({ query: { sortby } }, res, next) => {
-  fetchAllArticles(sortby).then((articles) => {
+exports.getAllArticles = ({ query: { topic } }, res, next) => {
+  fetchAllArticles(topic).then((articles) => {
     res.status(200).send({ articles });
   });
 };
