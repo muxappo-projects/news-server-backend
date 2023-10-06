@@ -65,6 +65,19 @@
       ]
     }
   },
+  "GET /api/users": {
+    "description": "serves an array of users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "user 1": {},
+          "user 2": {},
+          "user 3": {}
+        }
+      ]
+    }
+  },
   "POST /api/articles/:article_id/comments": {
     "description": "accepts a comment object containing username and commentBody properties, inserts according to given article id, then serves the created comment on completion",
     "exampleRequestBody": {
