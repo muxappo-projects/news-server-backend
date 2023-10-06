@@ -35,9 +35,13 @@ exports.getArticleByID = ({ params: { article_id } }, res, next) => {
 };
 
 exports.getAllArticles = ({ query: { topic } }, res, next) => {
-  fetchAllArticles(topic).then((articles) => {
-    res.status(200).send({ articles });
-  });
+  fetchAllArticles(topic)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getCommentsByArticle = ({ params: { article_id } }, res, next) => {
