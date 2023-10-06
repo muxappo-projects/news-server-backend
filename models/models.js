@@ -16,7 +16,6 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchArticleByID = (id) => {
-  console.log(id);
   const getQuery = `
   SELECT
     articles.author, articles.article_id,
