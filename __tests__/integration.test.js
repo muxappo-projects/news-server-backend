@@ -92,7 +92,6 @@ describe("GET requests", () => {
       return request(app)
         .get("/api/articles/1")
         .then(({ body: { article } }) => {
-          console.log(article);
           const isObject = Object.keys(article[0]).length > 0;
           const isNotArray = !Array.isArray(article[0]);
 
