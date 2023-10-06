@@ -104,6 +104,7 @@ describe("GET requests", () => {
             "created_at",
             "votes",
             "article_img_url",
+            "comment_count",
           ];
 
           expect(isObject && isNotArray).toBe(true);
