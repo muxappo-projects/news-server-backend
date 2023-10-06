@@ -176,31 +176,86 @@ describe("GET requests", () => {
         });
     });
 
-    describe("FEATURE: /api/articles?topic=<topic_name>", () => {
-      it("responds with a filtered list of articles when passed a valid topic", () => {
-        return request(app)
-          .get("/api/articles?topic=cats")
-          .then(({ body: { articles } }) => {
-            expect(articles.length).toBe(1);
-            expect(articles[0].topic).toBe("cats");
-          });
+    describe("FEATURE: /api/articles queries", () => {
+      describe("?topic=<topic_name>", () => {
+        it("responds with a filtered list of articles when passed a valid topic", () => {
+          return request(app)
+            .get("/api/articles?topic=cats")
+            .then(({ body: { articles } }) => {
+              expect(articles.length).toBe(1);
+              expect(articles[0].topic).toBe("cats");
+            });
+        });
+
+        it("returns a 404 when given a topic that doesn't exist", () => {
+          return request(app)
+            .get("/api/articles?topic=dogs")
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Not found");
+            });
+        });
+
+        it("returns no rows when passed a topic with no associated articles", () => {
+          return request(app)
+            .get("/api/articles?topic=paper")
+            .then(({ body: { articles } }) => {
+              expect(articles.length).toBe(0);
+            });
+        });
       });
 
-      it("returns a 404 when given a topic that doesn't exist", () => {
-        return request(app)
-          .get("/api/articles?topic=dogs")
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Not found");
-          });
+      describe("?sortby=<sortby>", () => {
+        it("returned array should be sorted by the given query (date by default)", () => {
+          const sortByAuthor = request(app)
+            .get("/api/articles?sortby=author")
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSortedBy("author", { descending: true });
+            });
+
+          const sortByDate = request(app)
+            .get("/api/articles")
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSortedBy("created_at", { descending: true });
+            });
+
+          return Promise.all([sortByAuthor, sortByDate]);
+        });
+
+        it("returns a 400 when given an invalid sortby", () => {
+          return request(app)
+            .get("/api/articles?sortby=dogname")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Invalid parameter(s)");
+            });
+        });
       });
 
-      it("returns 'No articles under that topic' when passed a topic with no associated articles", () => {
-        return request(app)
-          .get("/api/articles?topic=paper")
-          .then(({ body: { articles } }) => {
-            expect(articles).toBe("No articles under that topic");
-          });
+      describe("?order=<order>", () => {
+        it("returned array should be sorted in the given order (descending by default)", () => {
+          const ascending = request(app)
+            .get("/api/articles?order=asc")
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSortedBy(null, { descending: false });
+            });
+          const descending = request(app)
+            .get("/api/articles?order=desc")
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSortedBy(null, { descending: true });
+            });
+
+          return Promise.all([ascending, descending]);
+        });
+
+        it("returns a 400 when given an invalid order query", () => {
+          return request(app)
+            .get("/api/articles?order=none")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Invalid parameter(s)");
+            });
+        });
       });
     });
   });
