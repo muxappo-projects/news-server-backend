@@ -187,11 +187,20 @@ describe("GET requests", () => {
           });
       });
 
-      it("responds with 'No articles found' when given a topic that doesn't exist", () => {
+      it("returns a 404 when given a topic that doesn't exist", () => {
         return request(app)
           .get("/api/articles?topic=dogs")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Not found");
+          });
+      });
+
+      it("returns 'No articles under that topic' when passed a topic with no associated articles", () => {
+        return request(app)
+          .get("/api/articles?topic=paper")
           .then(({ body: { articles } }) => {
-            expect(articles).toBe("No articles found");
+            expect(articles).toBe("No articles under that topic");
           });
       });
     });
