@@ -15,7 +15,7 @@ This project was created during the final week of the Northcoders backend module
 - Hosting of the API using ElephantSQL and Render
 - Use of TDD in conjunction with both dev and test databases to make testing various outcomes easier to manage
 
-## To view the hosted version of this project click here: https://news-api-oery.onrender.com
+## To view the hosted version of this project click here: https://news-api-oery.onrender.com/api
 
 ### Setup:
 
