@@ -5,6 +5,7 @@ const {
   handlePSQLErrors,
   noEndpoint,
 } = require("./controllers/error.controllers.js");
+const cors = require("cors");
 
 const {
   getTopics,
@@ -18,6 +19,7 @@ const {
   getAllUsers,
 } = require("./controllers/server.controllers.js");
 
+app.use(cors());
 app.use(express.json());
 
 // GET requests
