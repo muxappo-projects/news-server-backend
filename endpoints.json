@@ -20,7 +20,12 @@
       "author",
       "topic",
       "sort_by",
-      "order"
+      "order",
+      "votes",
+      "title",
+      "comment_count",
+      "date",
+      "id"
     ],
     "exampleResponse": {
       "articles": [
