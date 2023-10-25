@@ -45,7 +45,7 @@ exports.fetchAllArticles = async (topic, sortby = "date", order = "desc") => {
     author: "author",
     title: "title",
     votes: "votes",
-    comment_count: "comment_count",
+    comments: "comment_count",
     date: "created_at",
     id: "article_id",
   };
